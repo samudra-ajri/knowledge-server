@@ -30,7 +30,27 @@ const getContentById = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Count contents types
+// @route   GET /api/contents/count
+// @access  Private/Admin
+const countContents = asyncHandler(async (req, res) => {
+    const contents = await Content.aggregate([
+        { $match: {} },
+        { $group: {
+            _id: "$content_type",
+            total: { $sum: 1 },
+            elastic: { $sum: "$elastic" }
+        } },
+    ])
+
+    const totalContent = await Content.find().countDocuments()
+    const totalElastic = await Content.find({ elastic: 1}).countDocuments()
+    
+    res.json({ contents, totalContent, totalElastic })
+})
+
 export { 
     getContents,
     getContentById,
+    countContents
 }
