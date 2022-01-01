@@ -53,8 +53,15 @@ const countContents = asyncHandler(async (req, res) => {
         } },
     ])
 
-    const totalContent = await Content.find().countDocuments()
-    const totalElastic = await Content.find({ elastic: 1}).countDocuments()
+    console.log(filter);
+
+    const totalContent = await Content.find(filter).countDocuments()
+    const totalElastic = await Content.find({ 
+        $and: [
+            filter, 
+            { elastic: 1 }
+        ]
+    }).countDocuments()
     
     res.json({ contents, totalContent, totalElastic })
 })
