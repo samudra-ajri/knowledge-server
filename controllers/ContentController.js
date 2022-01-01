@@ -34,8 +34,15 @@ const getContentById = asyncHandler(async (req, res) => {
 // @route   GET /api/contents/count
 // @access  Private/Admin
 const countContents = asyncHandler(async (req, res) => {
+    const start = req.query.start
+    const end = req.params.end
     const contents = await Content.aggregate([
-        { $match: {} },
+        { $match: { 
+            created_at: {
+                $gte: start,
+                $lte: end
+            }
+        } },
         { $group: {
             _id: "$content_type",
             total: { $sum: 1 },
