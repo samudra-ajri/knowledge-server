@@ -35,7 +35,7 @@ const getContentById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const countContents = asyncHandler(async (req, res) => {
     const start = req.query.start
-    const end = req.params.end
+    const end = req.query.end
     const contents = await Content.aggregate([
         { $match: { 
             created_at: {
