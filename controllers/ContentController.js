@@ -35,14 +35,17 @@ const getContentById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const countContents = asyncHandler(async (req, res) => {
     const start = req.query.start
-    const end = req.query.end
+    const end = req.query.end ?? new Date().toISOString();
+    const filter = {}
+    if (start) {
+        filter['created_at'] = {
+            $gte: start,
+            $lte: end
+        }
+    }
+
     const contents = await Content.aggregate([
-        { $match: { 
-            created_at: {
-                $gte: start,
-                $lte: end
-            }
-        } },
+        { $match: filter },
         { $group: {
             _id: "$content_type",
             total: { $sum: 1 },
